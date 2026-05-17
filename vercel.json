@@ -1,10 +1,38 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "buildCommand": "vite build",
+  "buildCommand": "npm run build",
   "outputDirectory": "dist/client",
   "installCommand": "npm install --legacy-peer-deps --no-audit --no-fund",
   "framework": null,
   "rewrites": [
-    { "source": "/((?!assets/|favicon.ico).*)", "destination": "/api/ssr" }
-  ]
+    {
+      "source": "/((?!api|_next/static|_next/image|favicon.ico|assets/).*)",
+      "destination": "/api/ssr"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "X-XSS-Protection",
+          "value": "1; mode=block"
+        }
+      ]
+    }
+  ],
+  "functions": {
+    "api/ssr.ts": {
+      "maxDuration": 30,
+      "memory": 1024
+    }
+  }
 }
